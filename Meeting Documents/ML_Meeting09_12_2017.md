@@ -37,7 +37,7 @@
        **Deep Learning**?  
        **Sum of squared differnce(ssd)**?
 4. Still refer to journals or even change a method. NOT EMERGENCY
-5. Take time to look up the parameter online or ask TA for help. Priority after or same as 2.
+5. Take time to look up the parameter online or ask TA for help. Priority after or same as 2.  
 ##Things to do in purposal:
 + <font color=red>ATTENTION: NO LONGER THAN 2 PAGES</font>
 + Team member names.
