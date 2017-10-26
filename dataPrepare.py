@@ -60,8 +60,10 @@ def input2train(input_df,input_dict=[]):
 
 train_df = pd.read_csv('../public/TADPOLE_TargetData_train.csv')
 train_df=sort_train(train_df)
+
 train_df=train_df.drop('Date',1)
-#train_df.to_csv('train_sorted.csv', index=False)
+print(train_df.values)
+train_df.to_csv('train_sorted.csv', index=False)
 
 test_df = pd.read_csv('../public/TADPOLE_TargetData_test.csv')
 test_df = sort_train(test_df)
