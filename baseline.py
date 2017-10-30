@@ -64,7 +64,7 @@ test_df = sort_train(test_df)
 test_df=test_df.drop('Date',1)
 test_df.to_csv('test_sorted.csv', index=False)
 
-input_df = pd.read_csv('out.csv')
+input_df = pd.read_csv('../input_normalization.csv')
 result_train=baselineAlgorithm(input_df,train_df)
 result_train.to_csv('result_train.csv', index=False)
 result_test=baselineAlgorithm(input_df,test_df)

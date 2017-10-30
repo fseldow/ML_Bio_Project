@@ -65,7 +65,7 @@ def handleDX(df):
 #linear handle leaky data
 def dataCompen(df,index):
     list=df[index]
-    time=df['Month']
+    time=df['M']
     ptid=df['PTID_Key']
     last_valid = 0
     next_valid = len(list) - 1

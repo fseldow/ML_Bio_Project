@@ -32,7 +32,7 @@ def evaluateClassification(real,result):
     print(loss,sim/n1)
     return loss
 def evaluateRegression(real,result):
-    list=['ADAS13','MMSE']
+    list=['ADAS13','MMSE','Ventricles_Norm']
     ret=[]
     for item in list:
         loss=0
@@ -44,7 +44,22 @@ def evaluateRegression(real,result):
         if n!=0:
             loss/=n
         ret.append((item,loss))
-    print(ret)
+    print('MSD',ret)
+    return ret
+def evaluateMAD(real,result):
+    list=['ADAS13','MMSE','Ventricles_Norm']
+    ret=[]
+    for item in list:
+        loss=0
+        n=0
+        for i in range(len(real)):
+            if pd.notnull(real[item][i]):
+                loss+=abs(real[item][i]-result[item][i])
+                n+=1
+        if n!=0:
+            loss/=n
+        ret.append((item,loss))
+    print('MAD',ret)
     return ret
 
 train_real = pd.read_csv('train_sorted.csv')
@@ -64,6 +79,9 @@ other_test_data_result=test_result.drop(['DXCHANGE','PTID_Key'],axis=1)
 
 evaluateRegression(train_real,train_result)
 evaluateRegression(test_real,test_result)
+
+evaluateMAD(train_real,train_result)
+evaluateMAD(test_real,test_result)
 
 evaluateClassification(train_real,train_result)
 evaluateClassification(test_real,test_result)

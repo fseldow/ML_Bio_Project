@@ -2,7 +2,7 @@ import pandas as pd
 import csv_utils as utils
 #import keras
 
-y_index=['DXCHANGE','Ventricles','ADAS13','Ventricles_Norm','MMSE']
+y_index=['DXCHANGE','ADAS13','Ventricles_Norm','MMSE']
 x_index=['AGE','PTGENDER','PTEDUCAT','PTETHCAT','PTRACCAT','PTMARRY','APOE4']
 
 def sort_train(df):
@@ -10,6 +10,8 @@ def sort_train(df):
     order = ['PTID_Key', 'Date']
     df = df.sort_values(by=order)
     df.index = pd.RangeIndex(len(df.index))
+    df['DXCHANGE'] = df['CN_Diag'] + 2 * df['MCI_Diag'] + 3 * df['AD_Diag']
+    df = df.drop(['CN_Diag', 'MCI_Diag', 'AD_Diag'], axis=1)
     return df
 
 def mergeFiles(input_df,target_df):
@@ -52,7 +54,7 @@ def input2train(input_df,input_dict=[]):
     for (id,range) in input_dict.items():
         print(id,'in',len(input_dict))
         input_df.loc[range[0]:range[1],list]=input_df.loc[range[0]:range[1],list].shift(1)
-    input_df.dropna(inplace=True)
+    input_df=input_df.dropna(axis=0,how='any')
     return input_df
 
 
@@ -60,21 +62,23 @@ def input2train(input_df,input_dict=[]):
 
 train_df = pd.read_csv('../public/TADPOLE_TargetData_train.csv')
 train_df=sort_train(train_df)
-
 train_df=train_df.drop('Date',1)
-print(train_df.values)
-train_df.to_csv('train_sorted.csv', index=False)
+#train_df.to_csv('train_sorted.csv', index=False)
 
 test_df = pd.read_csv('../public/TADPOLE_TargetData_test.csv')
 test_df = sort_train(test_df)
 test_df=test_df.drop('Date',1)
 #test_df.to_csv('test_sorted.csv', index=False)
 
-input_df = pd.read_csv('after_drop.csv')
+input_df = pd.read_csv('../input_normalization.csv')
+train_df=mergeFiles(input_df,train_df)
+train_df.to_csv('train_add.csv', index=False)
 #test_df=mergeFiles(input_df,test_df)
-
+#test_df.to_csv('test_add.csv', index=False)
+'''
 input_df=input2train(input_df)
 input_df.to_csv('input_shift.csv', index=False)
+'''
 
 
 
