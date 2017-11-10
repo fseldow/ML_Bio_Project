@@ -57,7 +57,11 @@ def input2train(input_df,input_dict=[]):
     input_df=input_df.dropna(axis=0,how='any')
     return input_df
 
-
+def add_last_y2h(input_df):
+    add_index=['DXCHANGE','MMSE','ADAS13','Ventricles_Norm']
+    add_to=['DXCHANGE_PRE','MMSE_PRE','ADAS13_PRE','Ventricles_Norm_PRE']
+    input_df[add_to]=input_df[add_index]
+    return input_df
 
 
 train_df = pd.read_csv('../public/TADPOLE_TargetData_train.csv')
@@ -70,12 +74,22 @@ test_df = sort_train(test_df)
 test_df=test_df.drop('Date',1)
 #test_df.to_csv('test_sorted.csv', index=False)
 
+val_df = pd.read_csv('../public/TADPOLE_PredictTargetData_valid.csv')
+val_df = sort_train(val_df)
+#val_df=val_df.drop('Date',1)
+val_df.to_csv('val_sorted.csv', index=False)
+
+'''
 input_df = pd.read_csv('../input_normalization.csv')
+input_df=add_last_y2h(input_df)
+
 train_df=mergeFiles(input_df,train_df)
 train_df.to_csv('train_add.csv', index=False)
-#test_df=mergeFiles(input_df,test_df)
-#test_df.to_csv('test_add.csv', index=False)
-'''
+test_df=mergeFiles(input_df,test_df)
+test_df.to_csv('test_add.csv', index=False)
+val_df=mergeFiles(input_df,val_df)
+val_df.to_csv('val_add.csv', index=False)
+
 input_df=input2train(input_df)
 input_df.to_csv('input_shift.csv', index=False)
 '''

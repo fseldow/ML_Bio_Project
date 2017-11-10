@@ -50,6 +50,9 @@ def getTrain(input_df,train_df):
     train = train.dropna(axis=0, subset=[Target])
     return train
 
+
+
+#########################################################################
 epochs=10
 
 input_shift=pd.read_csv('input_shift.csv')
@@ -67,7 +70,7 @@ Y_train=keras.utils.to_categorical(Y_train, 3)
 input=Input(shape=(X_train.shape[1],))
 hidden1=Dense(30, activation='relu')(input)
 hidden1_11=Dense(15,activation='sigmoid')(hidden1)
-hidden1_1=Dense(20, activation='tanh')(hidden1_11)
+hidden1_1=Dense(20, activation='relu')(hidden1_11)
 hidden2=Dense(len(ref.h_index),activation='relu')(hidden1_1)
 output=Dense(3, activation='softmax')(hidden2)
 
@@ -92,17 +95,15 @@ for i in range(30):
     train = getTrain(input_shift, train_add)
     X_train = train[ref.h_index + ref.x_index].values
 
-test_add=pd.read_csv('test_add.csv')
+test_add=pd.read_csv('val_add.csv')
 test_add[Target]=test_add[Target]-1
 test_complete=predict_state(encoder,model,test_add)
-test_complete=test_complete.dropna(subset=[Target],axis=0)
-test_complete.index=range(len(test_complete.index))
+#test_complete=test_complete.dropna(subset=[Target],axis=0)
+#test_complete.index=range(len(test_complete.index))
 X_test=test_complete[ref.h_index+ref.x_index].values
 Y_test=test_complete[Target].values
-Y_test=keras.utils.to_categorical(Y_test, 3)
+#Y_test=keras.utils.to_categorical(Y_test, 3)
 
-score = model.evaluate(X_test, Y_test, verbose=0)
-print(score)
 result=model.predict(X_test)
 np.savetxt('result_test_classi.csv',result, delimiter=',')
 np.savetxt('result_test_classi2.csv',Y_test, delimiter=',')

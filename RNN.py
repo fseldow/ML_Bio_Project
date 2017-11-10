@@ -28,7 +28,7 @@ def predict_state(Encoder,Model,target_df):
 def predict_result(Encoder,Model,target_df):
     target_dict = utils.build_ptid_split_dic(target_df)
     for i in range(len(target_df.index)):
-        print(i, 'in', len(target_df.index))
+        #print(i, 'in', len(target_df.index))
         id = target_df['PTID_Key'][i]
         start_in_train = target_dict[id][0]
         end_in_train = target_dict[id][1]
@@ -92,6 +92,15 @@ test_result=predict_result(encoder,model,test_add)
 test_add=pd.read_csv('test_add.csv')
 evaluateRegression(test_add,test_result)
 test_result.to_csv('test_predict.csv')
+
+val_add=pd.read_csv('val_add.csv')
+val_result=predict_result(encoder,model,val_add)
+try:
+    val_predict=pd.read_csv('val_predict.csv')
+    val_predict[Target]=val_result[Target]
+    val_predict.to_csv('val_predict.csv',index=False)
+except:
+    val_result[['PTID_Key',Target]].to_csv('val_predict.csv',index=False)
 
 
 
