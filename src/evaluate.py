@@ -1,5 +1,6 @@
 import pandas as pd
 import cmath as math
+import conf
 
 def evaluateClassification(real,result):
     dict_real_poss= {
@@ -61,26 +62,34 @@ def evaluateMAD(real,result):
     print('MAD',ret)
     return ret
 
-train_real = pd.read_csv('train_sorted.csv')
-test_real = pd.read_csv('test_sorted.csv')
-train_result=pd.read_csv('result_train.csv')
-test_result=pd.read_csv('result_test.csv')
+train_real = pd.read_csv(conf.intermediate_dir+'train_sorted.csv')
+test_real = pd.read_csv(conf.intermediate_dir+'test_sorted.csv')
+val_real = pd.read_csv(conf.intermediate_dir+'val_sorted.csv')
+train_result=pd.read_csv(conf.result_dir+'result_train.csv')
+test_result=pd.read_csv(conf.result_dir+'result_test.csv')
+val_result=pd.read_csv(conf.result_dir+'result_validation.csv')
 
 dx_train_data_real=train_real['DXCHANGE'].values
 dx_train_data_result=train_result['DXCHANGE'].values
 dx_test_data_real=test_real['DXCHANGE'].values
 dx_test_data_result=test_result['DXCHANGE'].values
+dx_val_data_real=val_real['DXCHANGE'].values
+dx_val_data_result=val_result['DXCHANGE'].values
 
 other_train_data_real=train_real.drop(['DXCHANGE','PTID_Key'],axis=1)
 other_train_data_result=train_result.drop(['DXCHANGE','PTID_Key'],axis=1)
 other_test_data_real=test_real.drop(['DXCHANGE','PTID_Key'],axis=1)
 other_test_data_result=test_result.drop(['DXCHANGE','PTID_Key'],axis=1)
+other_val_data_real=val_real.drop(['DXCHANGE','PTID_Key'],axis=1)
+other_val_data_result=val_result.drop(['DXCHANGE','PTID_Key'],axis=1)
 
 evaluateRegression(train_real,train_result)
 evaluateRegression(test_real,test_result)
-
+evaluateRegression(val_real,val_result)
+'''
 evaluateMAD(train_real,train_result)
 evaluateMAD(test_real,test_result)
-
+'''
 evaluateClassification(train_real,train_result)
 evaluateClassification(test_real,test_result)
+evaluateClassification(val_real,val_result)

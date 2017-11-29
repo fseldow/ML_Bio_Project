@@ -1,22 +1,18 @@
 import pandas as pd
-import csv_utils as utils
+import src.preprocess.csv_utils as utils
+import conf
 
 
 # solve for a and b
 def best_fit(X, Y):
-
     xbar = sum(X)/len(X)
     ybar = sum(Y)/len(Y)
     n = len(X) # or len(Y)
-
     numer = sum([xi*yi for xi,yi in zip(X, Y)]) - n * xbar * ybar
     denum = sum([xi**2 for xi in X]) - n * xbar**2
-
     b = numer / denum
     a = ybar - b * xbar
-
     print('best fit line:\ny = {:.2f} + {:.2f}x'.format(a, b))
-
     return a, b
 
 def sort_train(df):
@@ -54,18 +50,24 @@ def baselineAlgorithm(input_df,target_df):
             target_df.loc[i, item] = delta_month * (i - start_in_train + 1) + input_df[item][end_in_input]
     return target_df
 
-train_df = pd.read_csv('../public/TADPOLE_TargetData_train.csv')
+train_df = pd.read_csv(conf.raw_dir+'TADPOLE_TargetData_train.csv')
 train_df=sort_train(train_df)
 train_df=train_df.drop('Date',1)
-train_df.to_csv('train_sorted.csv', index=False)
+#train_df.to_csv('train_sorted.csv', index=False)
 
-test_df = pd.read_csv('../public/TADPOLE_TargetData_test.csv')
+test_df = pd.read_csv(conf.raw_dir+'TADPOLE_TargetData_test.csv')
 test_df = sort_train(test_df)
 test_df=test_df.drop('Date',1)
-test_df.to_csv('test_sorted.csv', index=False)
+#test_df.to_csv('test_sorted.csv', index=False)
 
-input_df = pd.read_csv('../input_normalization.csv')
+val_df = pd.read_csv(conf.raw_dir+'TADPOLE_TargetData_valid.csv')
+val_df = sort_train(val_df)
+val_df=val_df.drop('Date',1)
+
+input_df = pd.read_csv(conf.intermediate_dir+'norm.csv')
 result_train=baselineAlgorithm(input_df,train_df)
-result_train.to_csv('result_train.csv', index=False)
+result_train.to_csv(conf.result_dir+'result_train.csv', index=False)
 result_test=baselineAlgorithm(input_df,test_df)
-result_test.to_csv('result_test.csv', index=False)
+result_test.to_csv(conf.result_dir+'result_test.csv', index=False)
+result_val=baselineAlgorithm(input_df,val_df)
+result_val.to_csv(conf.result_dir+'result_validation.csv', index=False)

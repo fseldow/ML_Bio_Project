@@ -3,7 +3,19 @@ import src.preprocess.csv_utils as utils
 import conf as conf
 
 y_index=['DXCHANGE','ADAS13','Ventricles_Norm','MMSE']
-x_index=['AGE','PTGENDER','PTEDUCAT','PTETHCAT','PTRACCAT','PTMARRY','APOE4']
+x_index_helper=['AGE','PTGENDER','PTEDUCAT','PTETHCAT','PTRACCAT','PTMARRY','APOE4','DX_bl']
+x_index=[]
+h_index = []
+input_df = pd.read_csv(conf.intermediate_dir+'norm.csv')
+for (item, type) in input_df.dtypes.items():
+    for i in x_index_helper:
+        if i in item:
+            x_index.append(item)
+            break
+for (item, type) in input_df.dtypes.items():
+    if item not in x_index+y_index+['PTID_Key','M'] and '_bl' not in item:
+        h_index.append(item)
+
 
 def sort_train(df):
     df['Date'] = pd.to_datetime(df['Date'])
@@ -74,26 +86,26 @@ def shift_datas(input_flag=True,train_flag=True,test_flag=True,validation_flag=T
         train_df = pd.read_csv(conf.raw_dir+'TADPOLE_TargetData_train.csv')
         train_df = sort_train(train_df)
         train_df = train_df.drop('Date', 1)
-        # train_df.to_csv('train_sorted.csv', index=False)
+        train_df.to_csv(conf.intermediate_dir+'train_sorted.csv', index=False)
         train_df = mergeFiles(input_df, train_df)
-        train_df.to_csv(conf.result_dir+'train_add.csv', index=False)
+        train_df.to_csv(conf.intermediate_dir++'train_add.csv', index=False)
 
     if test_flag:
         test_df = pd.read_csv(conf.raw_dir+'TADPOLE_TargetData_test.csv')
         test_df = sort_train(test_df)
         test_df = test_df.drop('Date', 1)
-        # test_df.to_csv('test_sorted.csv', index=False)
+        test_df.to_csv(conf.intermediate_dir+'test_sorted.csv', index=False)
         test_df = mergeFiles(input_df, test_df)
-        test_df.to_csv(conf.result_dir+'test_add.csv', index=False)
+        test_df.to_csv(conf.intermediate_dir+'test_add.csv', index=False)
 
     if validation_flag:
         val_df = pd.read_csv(conf.raw_dir+'TADPOLE_PredictTargetData_valid.csv')
         val_df = sort_train(val_df)
-        # val_df=val_df.drop('Date',1)
-        val_df.to_csv(conf.result_dir+'val_sorted.csv', index=False)
+        val_df=val_df.drop('Date',1)
+        val_df.to_csv(conf.intermediate_dir+'val_sorted.csv', index=False)
         val_df = mergeFiles(input_df, val_df)
-        val_df.to_csv(conf.result_dir+'val_add.csv', index=False)
+        val_df.to_csv(conf.intermediate_dir+'val_add.csv', index=False)
 
     if input_flag:
         input_df=input2train(input_df)
-        input_df.to_csv(conf.result_dir+'input_shift.csv', index=False)
+        input_df.to_csv(conf.intermediate_dir+'input_shift.csv', index=False)
